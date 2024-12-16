@@ -7,6 +7,9 @@ import { Input } from '@rneui/themed';
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Redirect, Link } from "expo-router";
+import { supabase } from '@/lib/supabase';
+import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PlaceholderImage = require('@/assets/images/medkit_by_fortnite.png');
 
@@ -16,6 +19,24 @@ const validation = Yup.object().shape({
 })
 
 const HomeScreen = () => {
+  const handleLogin = async (values: { email: string; password: string }) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
+
+      if (error) throw error;
+
+      if (data.session) {
+        router.replace('/(tabs)/explore');
+      }
+    } catch (error) {
+      alert(error.message);
+      console.log(error, values);
+    }
+  };
+
   return (
     
     <ImageBackground source={require('@/assets/images/bg.png')} style={{width: '100%', height: '100%'}}>
@@ -26,7 +47,7 @@ const HomeScreen = () => {
     
         <Formik 
             initialValues={{ email: "", password: ""}}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={handleLogin}
             validationSchema={validation}
         >
         {({handleChange, handleBlur, handleSubmit, values, errors, touched})=>(
