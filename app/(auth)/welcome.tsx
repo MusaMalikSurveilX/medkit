@@ -73,6 +73,9 @@ const HomeScreen = () => {
         <View style={styles.reg}>
             <Link style={styles.reg} href="/(auth)/register">Don't Have an Account?</Link>
         </View>
+        <View style={styles.reg}>
+            <Link style={styles.reg} href="/(tabs)/explore">route back</Link>
+        </View>
     </View>
     </SafeAreaView>
     </ImageBackground>
