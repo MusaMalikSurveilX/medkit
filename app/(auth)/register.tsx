@@ -81,30 +81,27 @@ const Register = () => {
           >
             {({handleChange, handleBlur, handleSubmit, values, errors, touched})=>(
               <View style={styles.form}>
+                <View style={styles.name}>
                 <TextInput
-                  style={styles.input}
+                  style={styles.input1}
                   placeholder="First Name"
                   placeholderTextColor="#cbc7f4"
                   onChangeText={handleChange("firstName")}
                   onBlur={handleBlur("firstName")}
                   value={values.firstName}
                 />
-                {errors.firstName && touched.firstName && (
-                  <Text style={styles.errorText}>{errors.firstName}</Text>
-                )}
+             
 
                 <TextInput
-                  style={styles.input}
+                  style={styles.input2}
                   placeholder="Last Name"
                   placeholderTextColor="#cbc7f4"
                   onChangeText={handleChange("lastName")}
                   onBlur={handleBlur("lastName")}
                   value={values.lastName}
                 />
-                {errors.lastName && touched.lastName && (
-                  <Text style={styles.errorText}>{errors.lastName}</Text>
-                )}
-
+               
+                </View>
                 <TextInput
                   style={styles.input}
                   placeholder="Username"
@@ -113,9 +110,7 @@ const Register = () => {
                   onBlur={handleBlur("username")}
                   value={values.username}
                 />
-                {errors.username && touched.username && (
-                  <Text style={styles.errorText}>{errors.username}</Text>
-                )}
+               
 
                 <TextInput
                   style={styles.input}
@@ -127,10 +122,7 @@ const Register = () => {
                   keyboardType='email-address'
                 />
                 {/* Error */}
-                {errors.email && touched.email && (
-                    <Text style={styles.errorText}>{errors.email}</Text>
-                )}
-
+               
                 <TextInput
                   style={styles.input}
                   placeholder="Create Password"
@@ -142,9 +134,7 @@ const Register = () => {
                 />
 
                 {/* Error */}
-                {errors.password && touched.password && (
-                    <Text style={styles.errorText}>{errors.password}</Text>
-                )}
+                
 
                 <TextInput
                   style={styles.input}
@@ -156,9 +146,6 @@ const Register = () => {
                   secureTextEntry={true}
                 />
                 {/* Error */}
-                {errors.confirmPassword && touched.password && (
-                    <Text style={styles.errorText}>{errors.confirmPassword}</Text>
-                )}
 
                 {/* Login */}
                 <TouchableOpacity onPress={handleSubmit}>
@@ -168,6 +155,28 @@ const Register = () => {
                     </Text>
                   </View>
                 </TouchableOpacity>
+                <View style={styles.reg}>
+                    <Link style={styles.reg} href="/(auth)/welcome">Have an Account?</Link>
+          </View>
+                {errors.firstName && touched.firstName && (
+                  <Text style={styles.errorText}>{errors.firstName}</Text>
+                )}
+                {errors.lastName && touched.lastName && (
+                  <Text style={styles.errorText}>{errors.lastName}</Text>
+                )}
+                 {errors.username && touched.username && (
+                  <Text style={styles.errorText}>{errors.username}</Text>
+                )}
+                {errors.email && touched.email && (
+                    <Text style={styles.errorText}>{errors.email}</Text>
+                )}
+                {errors.password && touched.password && (
+                    <Text style={styles.errorText}>{errors.password}</Text>
+                )}
+                 {errors.confirmPassword && touched.password && (
+                    <Text style={styles.errorText}>{errors.confirmPassword}</Text>
+                )}
+
               </View>
             )}
           </Formik>
@@ -190,7 +199,7 @@ const styles = StyleSheet.create({
     image: {
         alignItems: "center",
         alignContent: "center",
-        width: "35%",
+        width: "40%",
         marginTop: "10%",
         height: "22%",
     },
@@ -209,7 +218,7 @@ const styles = StyleSheet.create({
       fontSize: 32,
       color: "#c4bce9",
       fontWeight: "bold",
-      marginTop: "20%",
+      marginTop: "10%",
       marginBottom: "10%",
       textAlign: "center",
     },
@@ -218,8 +227,13 @@ const styles = StyleSheet.create({
       alignContent: "center",
       alignItems: "center"
     },
+    name: {
+      flexDirection: "row",
+      alignContent: "center",
+      alignItems: "center",
+    },
     input: {
-      height: 50,
+      height: 40,
       borderColor: "#ffffff",
       borderWidth: 1,
       borderRadius: 8,
@@ -229,11 +243,36 @@ const styles = StyleSheet.create({
       color: "#cbc7f4",
       width: "70%"
     },
+    input1: {
+      height: 40,
+      borderColor: "#ffffff",
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 16,
+      marginBottom: 16,
+      backgroundColor: "#ffffff",
+      color: "#cbc7f4",
+      width: "34%",
+      marginRight: "1%"
+    },
+    input2: {
+      height: 40,
+      borderColor: "#ffffff",
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 16,
+      marginBottom: 16,
+      backgroundColor: "#ffffff",
+      color: "#cbc7f4",
+      width: "34%",
+      marginLeft: "1%"
+    },
     errorText: {
       color: "red",
       marginBottom: 8,
       marginTop: 0,
-      fontStyle: "italic"
+      fontStyle: "italic",
+      flexDirection: "column"
     },
     button: {
       height: 50,

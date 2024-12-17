@@ -241,7 +241,10 @@ const PromptPage = () => {
             style={styles.menuButton}
             onPress={() => setIsSidebarOpen(true)}
           >
-            <MaterialIcons name="menu" size={24} color="#666" />
+            <Image 
+                      source={require('@/assets/images/menu.png')} 
+                      style={styles.menuIcon}
+              />
           </TouchableOpacity>
           <Text style={styles.title}>MedKit</Text>
           <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
@@ -349,7 +352,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     paddingTop: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    
   },
   title: {
     fontSize: 24,
@@ -406,8 +409,8 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     padding: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderTopWidth: 1,
+    
+    
     borderTopColor: 'rgba(0,0,0,0.1)',
   },
   input: {
@@ -420,7 +423,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     maxHeight: 100,
     borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.1)',
+    borderColor: 'white',
   },
   sendButton: {
     width: 40,
@@ -438,6 +441,12 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     tintColor: '#fff',
+  },
+
+  menuIcon: {
+    width: 30,
+    height: 30,
+    tintColor: '#cbc7f4',
   },
   logoutButton: {
     position: 'absolute',
@@ -460,9 +469,8 @@ const styles = StyleSheet.create({
   menuButton: {
     position: 'absolute',
     left: 16,
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
+    padding: 4,
+
   },
   typingIndicator: {
     padding: 12,
