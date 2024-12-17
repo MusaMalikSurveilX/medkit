@@ -1,4 +1,4 @@
-import { Platform, Text, View, StyleSheet, TextInput, TouchableOpacity, Pressable, FlatList } from 'react-native';
+import { Platform, Text, View, StyleSheet, TextInput, TouchableOpacity, Pressable, FlatList, KeyboardAvoidingView, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image, ImageBackground } from 'expo-image';
@@ -6,14 +6,15 @@ import tw from "twrnc";
 import { Input } from '@rneui/themed';
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { Redirect, Link } from "expo-router";
+import { Redirect, Link, router } from "expo-router";
 import { useAuth } from '@/lib/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { useEffect, useState, useRef } from 'react';
 import type { Profile, Chat } from '@/types/database';
-import { getChatResponse, defaultSystemMessage, type Message, streamChatResponse } from '@/lib/openai';
+import { defaultSystemMessage, type Message, streamChatResponse } from '@/lib/openai';
 import { ChatSidebar } from '@/components/ChatSidebar';
 import { MaterialIcons } from '@expo/vector-icons';
+import { openDevMenu } from 'expo-dev-client';
 
 const validation = Yup.object().shape({
     prompt: Yup.string().required().label("Prompt"),
@@ -230,109 +231,122 @@ const PromptPage = () => {
     }
   }, [messages]);
 
+  // Add dev menu handler
+  const handleDevMenu = () => {
+    if (__DEV__) {
+      openDevMenu();
+    }
+  };
+
   return (
-    <ImageBackground 
-      source={require('@/assets/images/mainbg.png')} 
-      style={styles.backgroundImage}
-    >
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity 
-            style={styles.menuButton}
-            onPress={() => setIsSidebarOpen(true)}
-          >
-            <Image 
-                      source={require('@/assets/images/menu.png')} 
-                      style={styles.menuIcon}
-              />
-          </TouchableOpacity>
-          <Text style={styles.title}>MedKit</Text>
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <Text style={styles.logoutText}>Logout</Text>
-          </TouchableOpacity>
-        </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ImageBackground 
+        source={require('@/assets/images/mainbg.png')} 
+        style={styles.backgroundImage}
+      >
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.container}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+        >
+          <SafeAreaView style={styles.safeArea}>
+            <View style={styles.header}>
+              <TouchableOpacity 
+                style={styles.menuButton}
+                onPress={() => setIsSidebarOpen(true)}
+              >
+                <Image 
+                          source={require('@/assets/images/menu.png')} 
+                          style={styles.menuIcon}
+                  />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleDevMenu}>
+                <Text style={styles.title}>MedKit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+                <Text style={styles.logoutText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
 
-        <ChatSidebar
-          chats={chats}
-          currentChatId={currentChatId}
-          onChatSelect={loadChat}
-          onNewChat={createNewChat}
-          isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
-        />
-
-        {messages.length === 1 && (
-          <View style={styles.welcomeContainer}>
-            <Text style={styles.welcomeText}>Hi, how can I help you?</Text>
-          </View>
-        )}
-
-        <View style={styles.content}>
-          <View style={styles.chatArea}>
-            <FlatList
-              ref={flatListRef}
-              data={messages.slice(1)}
-              keyExtractor={(_, index) => index.toString()}
-              style={styles.chatContainer}
-              contentContainerStyle={styles.chatContentContainer}
-              ListFooterComponent={() => (
-                isTyping ? (
-                  <View style={styles.typingIndicator}>
-                    <Text style={styles.typingText}>Medkit is thinking...</Text>
-                  </View>
-                ) : null
-              )}
-              renderItem={({ item }) => (
-                <View style={[
-                  styles.messageContainer,
-                  item.role === 'user' ? styles.userMessage : styles.assistantMessage
-                ]}>
-                  <Text style={[
-                    styles.messageText,
-                    item.role === 'user' ? styles.userMessageText : styles.assistantMessageText
-                  ]}>
-                    {item.content}
-                  </Text>
-                </View>
-              )}
+            <ChatSidebar
+              chats={chats}
+              currentChatId={currentChatId}
+              onChatSelect={loadChat}
+              onNewChat={createNewChat}
+              isOpen={isSidebarOpen}
+              onClose={() => setIsSidebarOpen(false)}
             />
 
-            <Formik
-              initialValues={{ prompt: '' }}
-              validationSchema={validation}
-              onSubmit={(values, { resetForm }) => {
-                handleSubmit(values);
-                resetForm();
-              }}
-            >
-              {({ handleSubmit, values, handleChange }) => (
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Message Medkit..."
-                    placeholderTextColor="#666"
-                    value={values.prompt}
-                    onChangeText={handleChange('prompt')}
-                    multiline
-                    maxHeight={100}
-                  />
-                  <TouchableOpacity 
-                    onPress={() => handleSubmit()}
-                    style={[styles.sendButton, (!values.prompt || isLoading) && styles.sendButtonDisabled]}
-                    disabled={!values.prompt || isLoading}
-                  >
-                    <Image 
-                      source={require('@/assets/images/send.png')} 
-                      style={styles.sendIcon}
-                    />
-                  </TouchableOpacity>
-                </View>
-              )}
-            </Formik>
-          </View>
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
+            {messages.length === 1 && (
+              <View style={styles.welcomeContainer}>
+                <Text style={styles.welcomeText}>Hi, how can I help you?</Text>
+              </View>
+            )}
+
+            <View style={styles.content}>
+              <View style={styles.chatArea}>
+                <FlatList
+                  ref={flatListRef}
+                  data={messages.slice(1)}
+                  keyExtractor={(_, index) => index.toString()}
+                  style={styles.chatContainer}
+                  contentContainerStyle={styles.chatContentContainer}
+                  renderItem={({ item }) => (
+                    <View style={[
+                      styles.messageContainer,
+                      item.role === 'user' ? styles.userMessage : styles.assistantMessage
+                    ]}>
+                      <Text style={[
+                        styles.messageText,
+                        item.role === 'user' ? styles.userMessageText : styles.assistantMessageText
+                      ]}>
+                        {item.role === 'assistant' && isTyping ? 'Medkit is thinking...' : item.content}
+                      </Text>
+                    </View>
+                  )}
+                />
+
+                <Formik
+                  initialValues={{ prompt: '' }}
+                  validationSchema={validation}
+                  onSubmit={(values, { resetForm }) => {
+                    handleSubmit(values);
+                    resetForm();
+                  }}
+                >
+                  {({ handleSubmit, values, handleChange }) => (
+                    <View style={styles.inputContainer}>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Message Medkit..."
+                        placeholderTextColor="#666"
+                        value={values.prompt}
+                        onChangeText={handleChange('prompt')}
+                        multiline
+                        maxHeight={100}
+                      />
+                      <TouchableOpacity 
+                        onPress={() => handleSubmit()}
+                        style={[
+                          styles.sendButton, 
+                          (!values.prompt || isLoading) && styles.sendButtonDisabled
+                        ]}
+                        disabled={!values.prompt || isLoading}
+                      >
+                        <Image 
+                          source={require('@/assets/images/send.png')} 
+                          style={styles.sendIcon}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </Formik>
+              </View>
+            </View>
+          </SafeAreaView>
+        </KeyboardAvoidingView>
+      </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -370,10 +384,11 @@ const styles = StyleSheet.create({
   },
   chatContainer: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   chatContentContainer: {
     padding: 16,
-    paddingBottom: 32,
+    paddingBottom: 80,
   },
   messageContainer: {
     maxWidth: '80%',
@@ -388,12 +403,12 @@ const styles = StyleSheet.create({
   },
   userMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#cbc7f4',
+    backgroundColor: 'rgba(203, 199, 244, 0.9)',
     borderBottomRightRadius: 4,
   },
   assistantMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderBottomLeftRadius: 4,
   },
   messageText: {
@@ -408,22 +423,25 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    padding: 12,
-    
-    
-    borderTopColor: 'rgba(0,0,0,0.1)',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: 'transparent',
+    borderTopWidth: 0,
+    marginBottom: Platform.OS === 'android' ? 2 : -20,
   },
   input: {
     flex: 1,
-    backgroundColor: '#fff',
+    minHeight: 40,
+    maxHeight: 100,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 8,
     marginRight: 8,
-    fontSize: 16,
-    maxHeight: 100,
-    borderWidth: 1,
-    borderColor: 'white',
+    color: '#333',
+    borderWidth: 2,
+    borderColor: '#cbc7f4',
   },
   sendButton: {
     width: 40,
@@ -465,6 +483,7 @@ const styles = StyleSheet.create({
   },
   chatArea: {
     flex: 1,
+    justifyContent: 'space-between', // This ensures the input stays at the bottom
   },
   menuButton: {
     position: 'absolute',
@@ -484,5 +503,8 @@ const styles = StyleSheet.create({
   typingText: {
     color: '#666',
     fontStyle: 'italic',
+  },
+  safeArea: {
+    flex: 1,
   },
 });
