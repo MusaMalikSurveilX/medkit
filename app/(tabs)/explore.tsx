@@ -15,12 +15,21 @@ import { defaultSystemMessage, type Message, streamChatResponse } from '@/lib/op
 import { ChatSidebar } from '@/components/ChatSidebar';
 import { MaterialIcons } from '@expo/vector-icons';
 import { openDevMenu } from 'expo-dev-client';
+import { Nunito_400Regular, Nunito_600SemiBold, Nunito_700Bold } from '@expo-google-fonts/nunito';
+import { useFonts } from "expo-font";
 
 const validation = Yup.object().shape({
     prompt: Yup.string().required().label("Prompt"),
 })
 
 const PromptPage = () => {
+
+  const [fontsLoaded] = useFonts({
+    Nunito_400Regular,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+  });
+
   const { session } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [messages, setMessages] = useState<Message[]>([defaultSystemMessage]);
@@ -319,7 +328,7 @@ const PromptPage = () => {
                       <TextInput
                         style={styles.input}
                         placeholder="Message Medkit..."
-                        placeholderTextColor="#666"
+                        placeholderTextColor="#bfbee8"
                         value={values.prompt}
                         onChangeText={handleChange('prompt')}
                         multiline
@@ -372,6 +381,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#333',
     fontWeight: '600',
+    fontFamily: "Nunito_700Bold"
   },
   welcomeContainer: {
     padding: 20,
@@ -380,7 +390,8 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 20,
     color: '#666',
-    fontWeight: '500',
+    fontWeight: '300',
+  
   },
   chatContainer: {
     flex: 1,

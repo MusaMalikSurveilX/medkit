@@ -14,7 +14,7 @@ const PlaceholderImage = require('@/assets/images/medkit_by_fortnite.png');
 
 const validation = Yup.object().shape({
     email: Yup.string().required('Email Required').email().label("Email"),
-    password: Yup.string().required('Password Required').min(4).label("Password"),
+    password: Yup.string().required('Password Required').min(6).label("Password"),
     confirmPassword: Yup.string().oneOf([Yup.ref("password")], "Passwords must match").required("Required"),
     firstName: Yup.string().required('First Name Required').label("First Name"),
     lastName: Yup.string().required('Last Name Required').label("Last Name"),
@@ -83,9 +83,9 @@ const Register = () => {
               <View style={styles.form}>
                 <View style={styles.name}>
                 <TextInput
-                  style={styles.input1}
-                  placeholder="First Name"
-                  placeholderTextColor="#cbc7f4"
+                  style={[styles.input1, errors.firstName && touched.firstName && {borderColor: 'red'}]}
+                  placeholder={errors.firstName && touched.firstName ? "First Name Required" : "First Name"}
+                  placeholderTextColor= {errors.firstName && touched.firstName ? "red" : "#cbc7f4"}
                   onChangeText={handleChange("firstName")}
                   onBlur={handleBlur("firstName")}
                   value={values.firstName}
@@ -93,9 +93,9 @@ const Register = () => {
              
 
                 <TextInput
-                  style={styles.input2}
-                  placeholder="Last Name"
-                  placeholderTextColor="#cbc7f4"
+                  style={[styles.input2, errors.lastName && touched.lastName && {borderColor: 'red'}]}
+                  placeholder={errors.lastName && touched.lastName ? "Last Name Required" : "Last Name"}
+                  placeholderTextColor= {errors.lastName && touched.lastName ? "red" : "#cbc7f4"}
                   onChangeText={handleChange("lastName")}
                   onBlur={handleBlur("lastName")}
                   value={values.lastName}
@@ -103,9 +103,9 @@ const Register = () => {
                
                 </View>
                 <TextInput
-                  style={styles.input}
-                  placeholder="Username"
-                  placeholderTextColor="#cbc7f4"
+                  style={[styles.input3, errors.username && touched.username && {borderColor: 'red'}]}
+                  placeholder={errors.username && touched.username ? "Username Required" : "Create Username"}
+                  placeholderTextColor= {errors.username && touched.username ? "red" : "#cbc7f4"}
                   onChangeText={handleChange("username")}
                   onBlur={handleBlur("username")}
                   value={values.username}
@@ -113,9 +113,9 @@ const Register = () => {
                
 
                 <TextInput
-                  style={styles.input}
-                  placeholder="Create Email"
-                  placeholderTextColor="#cbc7f4"
+                  style={[styles.input4, errors.email && touched.email && {borderColor: 'red'}]}
+                  placeholder={errors.email && touched.email ? "Email Required" : "Enter Email"}
+                  placeholderTextColor= {errors.email && touched.email ? "red" : "#cbc7f4"}
                   onChangeText={handleChange("email")}
                   onBlur={handleBlur("email")}
                   value={values.email}
@@ -124,9 +124,9 @@ const Register = () => {
                 {/* Error */}
                
                 <TextInput
-                  style={styles.input}
-                  placeholder="Create Password"
-                  placeholderTextColor="#cbc7f4"
+                  style={[styles.input5, errors.password && touched.password && {borderColor: 'red'}]}
+                  placeholder={errors.password && touched.password ? "Must be at least 6 characters" : "Create Password"}
+                  placeholderTextColor= {errors.password && touched.password ? "red" : "#cbc7f4"}
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
                   value={values.password}
@@ -137,9 +137,9 @@ const Register = () => {
                 
 
                 <TextInput
-                  style={styles.input}
-                  placeholder="Confirm Password"
-                  placeholderTextColor="#cbc7f4"
+                  style={[styles.input6, errors.confirmPassword && touched.confirmPassword && {borderColor: 'red'}]}
+                  placeholder={errors.confirmPassword && touched.confirmPassword ? "Passwords must match" : "Confirm Password"}
+                  placeholderTextColor= {errors.confirmPassword && touched.confirmPassword ? "red" : "#cbc7f4"}
                   onChangeText={handleChange("confirmPassword")}
                   onBlur={handleBlur("confirmPassword")}
                   value={values.confirmPassword}
@@ -158,25 +158,6 @@ const Register = () => {
                 <View style={styles.reg}>
                     <Link style={styles.reg} href="/(auth)/welcome">Have an Account?</Link>
           </View>
-                {errors.firstName && touched.firstName && (
-                  <Text style={styles.errorText}>{errors.firstName}</Text>
-                )}
-                {errors.lastName && touched.lastName && (
-                  <Text style={styles.errorText}>{errors.lastName}</Text>
-                )}
-                 {errors.username && touched.username && (
-                  <Text style={styles.errorText}>{errors.username}</Text>
-                )}
-                {errors.email && touched.email && (
-                    <Text style={styles.errorText}>{errors.email}</Text>
-                )}
-                {errors.password && touched.password && (
-                    <Text style={styles.errorText}>{errors.password}</Text>
-                )}
-                 {errors.confirmPassword && touched.password && (
-                    <Text style={styles.errorText}>{errors.confirmPassword}</Text>
-                )}
-
               </View>
             )}
           </Formik>
@@ -266,6 +247,50 @@ const styles = StyleSheet.create({
       color: "#cbc7f4",
       width: "34%",
       marginLeft: "1%"
+    },
+    input3: {
+      height: 40,
+      borderColor: "#ffffff",
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 16,
+      marginBottom: 16,
+      backgroundColor: "#ffffff",
+      color: "#cbc7f4",
+      width: "70%"
+    },
+    input4: {
+      height: 40,
+      borderColor: "#ffffff",
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 16,
+      marginBottom: 16,
+      backgroundColor: "#ffffff",
+      color: "#cbc7f4",
+      width: "70%"
+    },
+    input5: {
+      height: 40,
+      borderColor: "#ffffff",
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 16,
+      marginBottom: 16,
+      backgroundColor: "#ffffff",
+      color: "#cbc7f4",
+      width: "70%"
+    },
+    input6: {
+      height: 40,
+      borderColor: "#ffffff",
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 16,
+      marginBottom: 16,
+      backgroundColor: "#ffffff",
+      color: "#cbc7f4",
+      width: "70%"
     },
     errorText: {
       color: "red",

@@ -53,32 +53,26 @@ const HomeScreen = () => {
         {({handleChange, handleBlur, handleSubmit, values, errors, touched})=>(
             <View style={styles.form}>
                 <TextInput
-                    style={styles.input}
-                    placeholder="Enter Email"
-                    placeholderTextColor="#cbc7f4"
+                    style={[styles.input, errors.email && touched.email && {borderColor: 'red'}]}
+                    placeholder={errors.email && touched.email ? "Email Required" : "Enter Email"}
+                    placeholderTextColor= {errors.email && touched.email ? "red" : "#cbc7f4"}
                     onChangeText={handleChange("email")}
                     onBlur={handleBlur("email")}
                     value={values.email}
                     keyboardType='email-address'
                 />
-                {/* Error */}
-                {errors.email && touched.email && (
-                    <Text style={styles.errorText}>{errors.email}</Text>
-                )}
+                
 
                 <TextInput
-                    style={styles.input}
-                    placeholder="Enter Password"
-                    placeholderTextColor="#cbc7f4"
+                    style={[styles.input, errors.password && touched.password && {borderColor: 'red'}]}
+                    placeholder={errors.password && touched.password ? "Password Required" : "Enter Password"}
+                    placeholderTextColor= {errors.password && touched.password ? "red" : "#cbc7f4"}
                     onChangeText={handleChange("password")}
                     onBlur={handleBlur("password")}
                     value={values.password}
                     secureTextEntry={true}
                 />
-                {/* Error */}
-                {errors.password && touched.password && (
-                    <Text style={styles.errorText}>{errors.password}</Text>
-                )}
+                
 
                 {/* Login */}
                 <TouchableOpacity onPress={handleSubmit}>
