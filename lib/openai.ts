@@ -31,7 +31,7 @@ export async function* streamChatResponse(messages: Message[]) {
         messages,
         temperature: 0.25,
         top_p: 0.72,
-        max_tokens: 256,
+        max_tokens: 1024,
         frequency_penalty: 0.35,
         presence_penalty: 0.2,
         stream: false, // Set to false first to test
